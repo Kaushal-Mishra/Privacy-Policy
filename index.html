@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Privacy Policy Generator</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="css/style.css" media="(prefers-color-scheme: light)">
+</head>
+
+<body>
+  <div id="app">
+    <div class="container">
+      <section class="section" id="step-1" v-if="wizardStep==1">
+        <div class="columns">
+          <div class="column box">
+            <div class="control is-expanded">
+              <p class="help form-label">Website Name</p>
+              <input class="input" type="text" required v-model="webName" placeholder="WaiFox" style="border: 1px solid #888; box-shadow: none;">
+            </div>
+            <div class="control is-expanded">
+              <p class="help form-label">Contact E-mail</p>
+              <input class="input" type="email" required v-model="webContact" placeholder="contact@zestgen.com" style="border: 1px solid #888; box-shadow: none;">
+            </div>
+            <div class="control is-expanded">
+              <p class="help form-label">Website URL</p>
+              <input class="input" type="text" required v-model="siteURL" placeholder="https://waifox.blogspot.com" style="border: 1px solid #888; box-shadow: none;">
+            </div>
+            <div class="control">
+              <p class="help form-label">Policy Effective Date</p>
+              <!-- Policy Effective Date-->
+              <input class="input is-primary" type="date" required="" v-model="effectiveFromDate" style="border: 1px solid #888; box-shadow: none;">
+            </div>
+            <div class="control is-expanded">
+              <p class="help form-label">Owner Type</p>
+              <!-- Owner-->
+              <div class="select" style="border: 1px solid #888; box-shadow: none; border-radius: 5px;">
+                <select v-model="typeOfDev" style="border: 1px solid #888; box-shadow: none;">
+                  <option value="" disabled="">Select owner type</option>
+                  <option>Individual</option>
+                  <option>Company</option>
+                </select>
+              </div>
+            </div>
+            <div class="control is-expanded" v-if="typeOfDev=='Company'">
+              <p class="help form-label">Company Name</p>
+              <!-- Company Name-->
+              <input class="input is-primary" type="text" v-model="companyName" placeholder="WaiFox" style="border: 1px solid #888; box-shadow: none;">
+            </div>
+            <div class="control is-expanded" v-if="typeOfDev=='Company'">
+              <p class="help form-label">Company Address</p>
+              <!-- Company Address-->
+              <input class="input is-primary" type="text" v-model="companyAdd"
+                placeholder="WaiFox, Maharashtra, India" style="border: 1px solid #888; box-shadow: none;">
+            </div>
+            <div class="control is-expanded" v-if="typeOfDev=='Individual'">
+              <p class="help form-label">Name</p>
+              <!-- Developer Name-->
+              <input class="input is-primary" type="text" v-model="devName" placeholder="Name" style="border: 1px solid #888; box-shadow: none;">
+            </div>
+            <a class="button" @click="nextStep()" rel="noopener noreferrer" style="margin-top: 20px; border: none; background: #5665E9; width: 100%; box-shadow: none;">Next</a>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="step-2" v-if="wizardStep==2">
+        <div class="columns">
+          <div class="column">
+            <div class="column box scrollable"><b>Include links to Third Party Services</b><a
+                v-for="item in thirdPartyServices" rel="noopener noreferrer"><br>
+                <input type="checkbox" :id="'list-switch-' + item.model" v-model="item[item.model]">
+                <label :for="'list-switch-' + item.model"><span class="thirdparty-text">{{ item.name }}</span></label></a>
+            </div>
+            <a class="button" @click="prevStep()" rel="noopener noreferrer" style="border: none; background: #5665E9;">Prev</a>
+            <a class="button" @click="nextStep()" rel="noopener noreferrer" style="border: none; background: #5665E9;">Next</a>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="step-3" v-if="wizardStep==3">
+        <div class="columns">
+          <div class="column">
+            <div class="box final-box"><b>All Done!</b><br>
+              <p>Your privacy policy is generated &#128071;</p><a class="button is-danger"
+                @click="togglePrivacyModalVisibility" width="100%" rel="noopener noreferrer" style="margin-top: 20px; border: none; background: #888; width: 100%; box-shadow: none;">Privacy Policy</a><br>
+              <a class="button is-primary" width="100%" @click="prevStep()" rel="noopener noreferrer" style="margin-top: 20px; border: none; background: #5665E9; width: 100%; box-shadow: none;">Go back</a><br><br>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="modal" v-bind:class="{ 'is-active': showPrivacyModal }">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title no-select">Privacy Policy</p>
+            <button class="delete" aria-label="close" @click="togglePrivacyModalVisibility"></button>
+          </header>
+          <section class="modal-card-body modal-box">
+            <div id="privacy_content" v-show="contentRenderType==1"><strong>Privacy Policy</strong>
+              <p>
+                {{ devOrCompanyName }} operates the website "{{webName}}" at <a :href="siteURL">{{siteURL}}</a>.
+                {{iOrWe | capitalize }} take your privacy seriously. To better protect your privacy,
+                {{iOrWe}} provide this privacy policy notice explaining the way your personal information
+                is collected and used.
+              </p>
+              <p><strong>Collection of Routine Information</strong></p>
+              <p>
+                This website track basic information about its visitors.
+                This information includes, but is not limited to, IP addresses, browser details,
+                timestamps and referring pages. None of this information can personally identify specific
+                visitors to this website. The information is tracked for routine
+                administration and maintenance purposes.
+              </p>
+              <p><strong>Cookies</strong></p>
+              <p>
+                Where necessary, this website uses cookies to store information about a visitor’s
+                preferences and history to better serve the visitor and/or present the
+                visitor with customized content.
+              </p>
+              <p><strong>Advertisement and Other Third Parties</strong></p>
+              <p>
+                Advertising partners and other third parties may use cookies, scripts and/or web beacons to track
+                visitor activities on this website to display advertisements
+                and other useful information. Such tracking is done directly by the third parties through their
+                servers and is subject to their privacy policies. This website has no access or
+                control over these cookies, scripts and/or web beacons that may be used by third parties.
+              </p>
+              <div v-if="hasThirdPartyServicesSelected">
+                <p>
+                  {{iOrWe | capitalize }} have included links on this website for your use and reference.
+                  {{iOrWe | capitalize }} {{areOrAm}} not responsible for the privacy policies on these websites. You
+                  should be aware
+                  that the privacy policies of these websites may differ from {{myOrOur}} own.
+                </p>
+                <p>
+                  Link to the privacy policy of third-party service providers used
+                  by the website
+                </p>
+                <ul>
+                  <li v-if="item[item.model] &amp;&amp; item.link.privacy" v-for="item in thirdPartyServices"><a
+                      :href="item.link.privacy" target="_blank" rel="noopener noreferrer">{{item.name}}</a></li>
+                </ul>
+              </div>
+              <p><strong>Security</strong></p>
+              <p>
+                The security of your personal information is important to {{meOrUs}}, but remember that no
+                method of transmission over the Internet, or method of electronic storage, is 100% secure.
+                While {{iOrWe}} strive to use commercially acceptable means to protect your personal information,
+                {{iOrWe}} cannot guarantee its absolute security.
+              </p>
+              <p><strong>Changes To This Privacy Policy</strong></p>
+              <p>
+                This Privacy Policy is effective as of {{effectiveFromDate}} and will remain in effect except concerning
+                any
+                changes in its provisions in the future, which will be in effect immediately after being posted on this
+                page.
+                {{iOrWe | capitalize }} reserve the right to update or change {{myOrOur}} Privacy Policy at any time and
+                you
+                should check this Privacy Policy periodically. If {{iOrWe}} make any material changes to this Privacy
+                Policy,
+                {{iOrWe}} will notify you either through the email address you have provided {{meOrUs}} or by
+                placing a prominent notice on {{myOrOur}} website.
+              </p>
+              <p><strong>Contact Information</strong></p>
+              <p>
+                For any questions or concerns regarding the privacy policy,
+                please send {{meOrUs}} an email at <a :href="'mailto:' + webContact">{{webContact}}</a>.
+              </p>
+              <p>
+                {{companyAddIn}}
+              </p>
+            </div>
+            <textarea class="textarea" id="privacy_txtarea" onclick="this.focus();this.select()" readonly="readonly"
+              v-show="contentRenderType==2"></textarea>
+          </section>
+          <footer class="modal-card-foot">
+            <button class="button is-success" @click="getHtml('privacy_content','privacy_txtarea')" style="border: none; background: #888;">HTML</button>
+            <button class="button is-success"
+              @click="getMarkdown('privacy_content', 'privacy_txtarea')" style="border: none; background: #888;">Markdown</button>
+            <button class="button is-success" v-if="contentRenderType!=1" @click="preview()" style="border: none; background: #5665E9;">Preview</button>
+            <button class="button" id="copybtn" data-clipboard-target="#privacy_content" style="border: none; background: #5665E9;">Copy</button>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/to-markdown/3.1.1/to-markdown.min.js"
+    integrity="sha256-2PIa0cHy6lNEesnk4/qokv291Whx/uhAy2V6WL2zmfo=" crossorigin="anonymous"></script>
+  <script src="js/thirdpartyservices.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
+
+  <script>
+    var btn = document.getElementById('copybtn');
+    var clipboard = new ClipboardJS(btn);
+
+    clipboard.on('success', function (e) {
+      console.info('Action:', e.action);
+      console.info('Text:', e.text);
+      console.info('Trigger:', e.trigger);
+    });
+
+    clipboard.on('error', function (e) {
+      console.info('Action:', e.action);
+      console.info('Text:', e.text);
+      console.info('Trigger:', e.trigger);
+    });
+  </script>
+
+
+
+  <!-- Service Worker-->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+  </script>
+
+</body>
+
+</html>
